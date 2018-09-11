@@ -1,5 +1,9 @@
 # Certbot DNS Authenticator For DNSPod
 
+此脚本针对域名使用DNSPod解析，且certbot使用dns方式验证。如果在执行`certbot renew`时出现如下错误时，可以试试此脚本。
+> Could not choose appropriate plugin: The manual plugin is not working; there may be problems with your existing configuration. The error was: PluginError('An authentication script must be provided with --manual-auth-hook when using the manual plugin non-interactively.',). Skipping.
+
+
 ## Installing
 
 ```sh
