@@ -36,13 +36,13 @@ $ echo "your dnspod token" > /etc/dnspod_token_$CERTBOT_DOMAIN
 ## Usage
 
 ```sh
-certbot certonly --manual --preferred-challenges dns-01 --email mail@domain.com -d laravel.run -d *.laravel.run --server https://acme-v02.api.letsencrypt.org/directory --manual-auth-hook /path/to/certbot-auth-dnspod.sh
+$ certbot certonly --manual --preferred-challenges dns-01 --email mail@domain.com -d laravel.run -d *.laravel.run --server https://acme-v02.api.letsencrypt.org/directory --manual-auth-hook /path/to/certbot-auth-dnspod.sh
 ```
 
 or
 
 ```sh
-certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh
+$ certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh
 ```
 
 or add crontab
