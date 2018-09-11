@@ -1,0 +1,1 @@
+# Certbot DNS Authenticator For DNSPod
