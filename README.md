@@ -4,7 +4,7 @@
 
 ```sh
 $ wget https://raw.githubusercontent.com/al-one/certbot-auth-dnspod/master/certbot-auth-dnspod.sh
-chmod +x certbot-auth-dnspod.sh
+$ chmod +x certbot-auth-dnspod.sh
 ```
 
 ## Config
