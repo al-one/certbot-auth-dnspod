@@ -25,6 +25,7 @@ or
 
 ```sh
 $ echo "your dnspod token" > /etc/dnspod_token_$CERTBOT_DOMAIN
+# echo "your dnspod token" > /etc/dnspod_token_laravel.run
 ```
 
 
@@ -40,7 +41,7 @@ or
 certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh
 ```
 
-or
+or add crontab
 
 ```crontab
 0 2 1 * * sh -c 'date "+\%Y-\%m-\%d \%H:\%M:\%S" && /usr/bin/certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh' >> /var/log/certbot-renew.log 2>&1
