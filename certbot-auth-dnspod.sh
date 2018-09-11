@@ -2,7 +2,7 @@
 
 #
 # Author: Alone(hi@anlo.ng)
-# Create: certbot certonly --manual --preferred-challenges dns-01 --email hi@anlo.ng -d laravel.run -d *.laravel.run --server https://acme-v02.api.letsencrypt.org/directory --manual-auth-hook /path/to/certbot-auth-dnspod.sh
+# Create: certbot certonly --manual --preferred-challenges dns-01 --email mail@domain.com -d laravel.run -d *.laravel.run --server https://acme-v02.api.letsencrypt.org/directory --manual-auth-hook /path/to/certbot-auth-dnspod.sh
 # Renew:  certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh
 #
 
