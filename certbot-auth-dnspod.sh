@@ -14,7 +14,15 @@ DOMAIN=$(expr match "$CERTBOT_DOMAIN" '.*\.\(.*\..*\)')
 [ -z "$DOMAIN" ] && DOMAIN="$CERTBOT_DOMAIN"
 
 if [ -z "$API_TOKEN" ]; then
+    [ -f $HOME/.dnspod_token_$DOMAIN ] && API_TOKEN=$(cat $HOME/.dnspod_token_$DOMAIN)
+fi
+
+if [ -z "$API_TOKEN" ]; then
     [ -f /etc/dnspod_token_$DOMAIN ] && API_TOKEN=$(cat /etc/dnspod_token_$DOMAIN)
+fi
+
+if [ -z "$API_TOKEN" ]; then
+    [ -f $HOME/.dnspod_token ] && API_TOKEN=$(cat $HOME/.dnspod_token)
 fi
 
 if [ -z "$API_TOKEN" ]; then
@@ -44,7 +52,7 @@ fi
 RECORDS=$(curl -s -X POST "https://dnsapi.cn/Record.List" \
     -H "User-Agent: $USER_AGENT" \
     -d "$PARAMS&domain=$CERTBOT_DOMAIN&keyword=_acme-challenge" \
-| python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('records',[{}])[0].get('id',ret.get('status',{}).get('message','error')))")
+| python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('records',[{}])[0].get('id'))")
 
 echo "\
 RECORDS:        $RECORDS"
