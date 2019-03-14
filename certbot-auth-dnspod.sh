@@ -52,7 +52,7 @@ fi
 RECORDS=$(curl -s -X POST "https://dnsapi.cn/Record.List" \
     -H "User-Agent: $USER_AGENT" \
     -d "$PARAMS&domain=$CERTBOT_DOMAIN&keyword=_acme-challenge" \
-| python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('records',[{}])[0].get('id'))")
+| python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('records',[{}])[0].get('id',''))")
 
 echo "\
 RECORDS:        $RECORDS"
