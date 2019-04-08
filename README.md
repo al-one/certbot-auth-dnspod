@@ -15,6 +15,8 @@ $ chmod +x certbot-auth-dnspod.sh
 
 > Get Your DNSPod Token From https://www.dnspod.cn/console/user/security
 
+> Token Format: `ID,Token` See: https://www.dnspod.cn/docs/info.html#common-parameters
+
 ```sh
 $ export DNSPOD_TOKEN="your dnspod token"
 ```
