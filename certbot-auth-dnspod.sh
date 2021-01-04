@@ -45,47 +45,31 @@ TXHOST:         $TXHOST
 VALIDATION:     $CERTBOT_VALIDATION"
 #echo "PARAMS:         $PARAMS"
 
-if [ -f /tmp/CERTBOT_$CERTBOT_DOMAIN/VALIDATION ]; then
-    VALIDATION_PRE=$(cat /tmp/CERTBOT_$CERTBOT_DOMAIN/VALIDATION)
-    if [ "$CERTBOT_VALIDATION" = "$VALIDATION_PRE" ]; then
-        echo "Same Validation: $CERTBOT_VALIDATION"
-        exit
+RECORD_PATH="/tmp/CERTBOT_$CERTBOT_DOMAIN"
+RECORD_FILE="$RECORD_PATH/RECORD_ID_$CERTBOT_VALIDATION"
+
+if [ "$1" = "clean" ]; then
+    RECORD_ID=$(cat $RECORD_FILE)
+    if [ -n "$RECORD_ID" ]; then
+      APIRET=$(curl -s -X POST "https://dnsapi.cn/Record.Remove" \
+          -H "User-Agent: $USER_AGENT" \
+          -d "$PARAMS&domain=$DOMAIN&record_id=$RECORD_ID" \
+      | python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('status',{}).get('message','error'))")
+      echo "Remove Record: $RECORD_ID - $APIRET"
     fi
-fi
-
-RECORDS=$(curl -s -X POST "https://dnsapi.cn/Record.List" \
-    -H "User-Agent: $USER_AGENT" \
-    -d "$PARAMS&domain=$DOMAIN&keyword=$TXHOST" \
-| python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('records',[{}])[0].get('id',''))")
-
-echo "\
-RECORDS:        $RECORDS"
-
-sleep 3
-
-if [ -n "$RECORDS" ]; then
-    RECORD_ID="$RECORDS"
-    RECORD_ID=$(curl -s -X POST "https://dnsapi.cn/Record.Modify" \
-        -H "User-Agent: $USER_AGENT" \
-        -d "$PARAMS&domain=$DOMAIN&sub_domain=$TXHOST&record_type=TXT&value=$CERTBOT_VALIDATION&record_line=默认&record_id=$RECORD_ID" \
-    | python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('record',{}).get('id',ret.get('status',{}).get('message','error')))")
+    rm -f $RECORD_FILE
 else
     RECORD_ID=$(curl -s -X POST "https://dnsapi.cn/Record.Create" \
         -H "User-Agent: $USER_AGENT" \
         -d "$PARAMS&domain=$DOMAIN&sub_domain=$TXHOST&record_type=TXT&value=$CERTBOT_VALIDATION&record_line=默认" \
     | python -c "import sys,json;ret=json.load(sys.stdin);print(ret.get('record',{}).get('id',ret.get('status',{}).get('message','error')))")
+
+    # Save info for cleanup
+    if [ ! -d $RECORD_PATH ]; then
+        mkdir -m 0700 $RECORD_PATH
+    fi
+    echo $RECORD_ID > $RECORD_FILE
+
+    # Sleep to make sure the change has time to propagate over to DNS
+    sleep 30
 fi
-
-echo "\
-RECORD_ID:      $RECORD_ID"
-
-# Save info for cleanup
-if [ ! -d /tmp/CERTBOT_$CERTBOT_DOMAIN ]; then
-    mkdir -m 0700 /tmp/CERTBOT_$CERTBOT_DOMAIN
-fi
-echo $DOMAIN > /tmp/CERTBOT_$CERTBOT_DOMAIN/DOMAIN
-echo $RECORD_ID > /tmp/CERTBOT_$CERTBOT_DOMAIN/RECORD_ID
-echo $CERTBOT_VALIDATION > /tmp/CERTBOT_$CERTBOT_DOMAIN/VALIDATION
-
-# Sleep to make sure the change has time to propagate over to DNS
-sleep 30
