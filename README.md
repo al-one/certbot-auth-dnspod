@@ -38,17 +38,17 @@ $ echo "your dnspod token" > /etc/dnspod_token_$CERTBOT_DOMAIN
 ## Usage
 
 ```sh
-$ certbot certonly --manual --preferred-challenges dns-01 --email mail@domain.com -d laravel.run -d *.laravel.run --server https://acme-v02.api.letsencrypt.org/directory --manual-auth-hook /path/to/certbot-auth-dnspod.sh
+$ certbot certonly --manual --preferred-challenges dns-01 --email mail@domain.com -d laravel.run -d *.laravel.run --server https://acme-v02.api.letsencrypt.org/directory --manual-auth-hook /path/to/certbot-auth-dnspod.sh --manual-cleanup-hook "/path/to/certbot-auth-dnspod.sh clean"
 ```
 
 or
 
 ```sh
-$ certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh
+$ certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh --manual-cleanup-hook "/path/to/certbot-auth-dnspod.sh clean"
 ```
 
 or add crontab
 
 ```crontab
-0 2 1 * * sh -c 'date "+\%Y-\%m-\%d \%H:\%M:\%S" && /usr/bin/certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh' >> /var/log/certbot-renew.log 2>&1
+0 2 1 * * sh -c 'date "+\%Y-\%m-\%d \%H:\%M:\%S" && /usr/bin/certbot renew --manual-auth-hook /path/to/certbot-auth-dnspod.sh --manual-cleanup-hook "/path/to/certbot-auth-dnspod.sh clean"' >> /var/log/certbot-renew.log 2>&1
 ```
